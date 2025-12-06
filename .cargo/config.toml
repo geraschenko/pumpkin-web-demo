@@ -1,0 +1,8 @@
+# Configure getrandom to use the JavaScript crypto API for wasm32 targets.
+# This is required because pumpkin-core depends on rand, which uses getrandom.
+# Without this config, `cargo build --target wasm32-unknown-unknown` will fail.
+#
+# Note: If you're using Dioxus's `dx build`, this config is not needed because
+# dx automatically injects this rustflag for wasm32 targets.
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']

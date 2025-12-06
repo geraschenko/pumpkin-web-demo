@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pumpkin WASM Demo</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        h1 { margin-bottom: 0.5rem; }
+        .subtitle { color: #666; margin-top: 0; }
+        .form-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .input-pair {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        label { font-size: 0.875rem; color: #444; }
+        input {
+            width: 60px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+        button:hover { background: #0055aa; }
+        button:disabled { background: #999; cursor: not-allowed; }
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .error { color: #cc0000; }
+        .success { color: #008800; }
+    </style>
+</head>
+<body>
+    <h1>Pumpkin WASM Demo</h1>
+    <p class="subtitle">Constraint solver: find x + y = target</p>
+
+    <div class="form-group">
+        <div class="input-pair">
+            <label for="min_x">min x</label>
+            <input type="number" id="min_x" value="1">
+        </div>
+        <div class="input-pair">
+            <label for="max_x">max x</label>
+            <input type="number" id="max_x" value="10">
+        </div>
+        <div class="input-pair">
+            <label for="min_y">min y</label>
+            <input type="number" id="min_y" value="1">
+        </div>
+        <div class="input-pair">
+            <label for="max_y">max y</label>
+            <input type="number" id="max_y" value="10">
+        </div>
+        <div class="input-pair">
+            <label for="target">target</label>
+            <input type="number" id="target" value="12">
+        </div>
+        <button id="solve" disabled>Loading...</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script type="module">
+        import init, { solve_sum } from './pkg/pumpkin_web_demo.js';
+
+        const btn = document.getElementById('solve');
+        const result = document.getElementById('result');
+
+        await init();
+        btn.disabled = false;
+        btn.textContent = 'Solve';
+
+        btn.addEventListener('click', () => {
+            const min_x = parseInt(document.getElementById('min_x').value);
+            const max_x = parseInt(document.getElementById('max_x').value);
+            const min_y = parseInt(document.getElementById('min_y').value);
+            const max_y = parseInt(document.getElementById('max_y').value);
+            const target = parseInt(document.getElementById('target').value);
+
+            const json = solve_sum(min_x, max_x, min_y, max_y, target);
+            const data = JSON.parse(json);
+
+            if (data.error) {
+                result.className = 'error';
+                result.textContent = data.error;
+            } else {
+                result.className = 'success';
+                result.textContent = `Solution found!\nx = ${data.x}\ny = ${data.y}\n\nVerification: ${data.x} + ${data.y} = ${data.x + data.y}`;
+            }
+        });
+    </script>
+</body>
+</html>
