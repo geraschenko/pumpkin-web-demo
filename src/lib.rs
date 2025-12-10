@@ -6,7 +6,8 @@
 use pumpkin_core::{
     constraints::{self, Constraint},
     results::{ProblemSolution, SatisfactionResult},
-    termination::Indefinite,
+    termination::TimeBudget,
+    Duration,
     Solver,
 };
 #[allow(unused_imports)]
@@ -23,7 +24,7 @@ fn init() {
 ///
 /// Returns a JSON string with the solution or error message.
 #[wasm_bindgen]
-pub fn solve_sum(min_x: i32, max_x: i32, min_y: i32, max_y: i32, target: i32) -> String {
+pub fn solve_sum(min_x: i32, max_x: i32, min_y: i32, max_y: i32, target: i32, time_limit_ns: u64) -> String {
     let mut solver = Solver::default();
 
     let x = solver.new_bounded_integer(min_x, max_x);
@@ -41,7 +42,7 @@ pub fn solve_sum(min_x: i32, max_x: i32, min_y: i32, max_y: i32, target: i32) ->
     }
 
     let mut brancher = solver.default_brancher();
-    let mut termination = Indefinite;
+    let mut termination = TimeBudget::starting_now(Duration::from_nanos(time_limit_ns));
 
     // Extract result before solver/brancher go out of scope
     let result = match solver.satisfy(&mut brancher, &mut termination) {
@@ -64,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_solve_sum_basic() {
-        let result = solve_sum(1, 10, 1, 10, 12);
+        let result = solve_sum(1, 10, 1, 10, 12, 1_000);
         assert!(result.contains("\"x\":"));
         assert!(result.contains("\"y\":"));
     }
@@ -72,7 +73,14 @@ mod tests {
     #[test]
     fn test_solve_sum_impossible() {
         // x in [1,2], y in [1,2], target=100 is impossible
-        let result = solve_sum(1, 2, 1, 2, 100);
+        let result = solve_sum(1, 2, 1, 2, 100, 1_000);
         assert!(result.contains("error"));
+    }
+
+    #[test]
+    fn test_solve_sum_zero_time() {
+        let result = solve_sum(1, 10, 1, 10, 12, 0);
+        eprintln!("result: {}", result);
+        assert!(result.contains("error"), "Expected timeout with 0ns limit, got: {}", result);
     }
 }

@@ -120,13 +120,14 @@ export function init() {
  * @param {number} min_y
  * @param {number} max_y
  * @param {number} target
+ * @param {bigint} time_limit_ns
  * @returns {string}
  */
-export function solve_sum(min_x, max_x, min_y, max_y, target) {
+export function solve_sum(min_x, max_x, min_y, max_y, target, time_limit_ns) {
     let deferred1_0;
     let deferred1_1;
     try {
-        const ret = wasm.solve_sum(min_x, max_x, min_y, max_y, target);
+        const ret = wasm.solve_sum(min_x, max_x, min_y, max_y, target, time_limit_ns);
         deferred1_0 = ret[0];
         deferred1_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);

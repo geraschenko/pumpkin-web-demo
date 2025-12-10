@@ -84,6 +84,13 @@
         <button id="solve" disabled>Loading...</button>
     </div>
 
+    <div class="form-group">
+        <div class="input-pair">
+            <label for="time_limit">time limit (ns)</label>
+            <input type="number" id="time_limit" value="1000" style="width: 200px;">
+        </div>
+    </div>
+
     <div id="result"></div>
 
     <script type="module">
@@ -102,8 +109,9 @@
             const min_y = parseInt(document.getElementById('min_y').value);
             const max_y = parseInt(document.getElementById('max_y').value);
             const target = parseInt(document.getElementById('target').value);
+            const time_limit = BigInt(document.getElementById('time_limit').value);
 
-            const json = solve_sum(min_x, max_x, min_y, max_y, target);
+            const json = solve_sum(min_x, max_x, min_y, max_y, target, time_limit);
             const data = JSON.parse(json);
 
             if (data.error) {

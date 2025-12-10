@@ -114,7 +114,7 @@ checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 [[package]]
 name = "drcp-format"
 version = "0.3.0"
-source = "git+https://github.com/geraschenko/Pumpkin#c1da1fc6eeda803fe2e090bb48eea990cc1a004b"
+source = "git+https://github.com/geraschenko/Pumpkin#81b4b8a6488fa4ad9c84ed8069e26d51ee9a48a3"
 dependencies = [
  "thiserror",
 ]
@@ -364,7 +364,7 @@ dependencies = [
 [[package]]
 name = "pumpkin-core"
 version = "0.2.2"
-source = "git+https://github.com/geraschenko/Pumpkin#c1da1fc6eeda803fe2e090bb48eea990cc1a004b"
+source = "git+https://github.com/geraschenko/Pumpkin#81b4b8a6488fa4ad9c84ed8069e26d51ee9a48a3"
 dependencies = [
  "bitfield",
  "bitfield-struct",
